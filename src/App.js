@@ -125,7 +125,7 @@ const DragDrop = () => {
       return;
     },
     onSwipedRight: () => {},
-    preventDefaultTouchmoveEvent: true,
+    preventDefaultTouchmoveEvent: false,
     trackMouse: true
   });
 
