@@ -22,49 +22,59 @@ const columnsFromBackend = {
   }
 };
 
+function getStyle(style, snapshot) {
+  if (!snapshot.isDropAnimating) {
+    return style;
+  }
+  return {
+    ...style,
+    // cannot be 0, but make it super tiny
+    transitionDuration: `0.001s`
+  };
+}
+
 const onDropEnd = (result, columns, setColumns) => {
   const { source, destination } = result;
   if (!result.destination) {
-    // if (source.droppableId === '1') {
-    //   const sourceColumn = columns[source.droppableId];
-    //   const destColumn = columns['2'];
-    //   const sourceItems = [...sourceColumn.items];
-    //   const destItems = [...destColumn.items];
-    //   const [removed] = sourceItems.splice(source.index, 1);
-    //   destItems.splice(0, 0, removed);
-    //   setColumns({
-    //     ...columns,
-    //     [source.droppableId]: {
-    //       ...sourceColumn,
-    //       items: sourceItems
-    //     },
-    //     ['2']: {
-    //       ...destColumn,
-    //       items: destItems
-    //     }
-    //   });
-    //   return;
-    // } else {
-    //   const sourceColumn = columns[source.droppableId];
-    //   const destColumn = columns['1'];
-    //   const sourceItems = [...sourceColumn.items];
-    //   const destItems = [...destColumn.items];
-    //   const [removed] = sourceItems.splice(source.index, 1);
-    //   destItems.splice(0, 0, removed);
-    //   setColumns({
-    //     ...columns,
-    //     [source.droppableId]: {
-    //       ...sourceColumn,
-    //       items: sourceItems
-    //     },
-    //     ['1']: {
-    //       ...destColumn,
-    //       items: destItems
-    //     }
-    //   });
-    //   return;
-    // }
-    return;
+    if (source.droppableId === '1') {
+      const sourceColumn = columns[source.droppableId];
+      const destColumn = columns['2'];
+      const sourceItems = [...sourceColumn.items];
+      const destItems = [...destColumn.items];
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(0, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...sourceColumn,
+          items: sourceItems
+        },
+        ['2']: {
+          ...destColumn,
+          items: destItems
+        }
+      });
+      return;
+    } else {
+      const sourceColumn = columns[source.droppableId];
+      const destColumn = columns['1'];
+      const sourceItems = [...sourceColumn.items];
+      const destItems = [...destColumn.items];
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(0, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...sourceColumn,
+          items: sourceItems
+        },
+        ['1']: {
+          ...destColumn,
+          items: destItems
+        }
+      });
+      return;
+    }
   }
 
   if (source.droppableId !== destination.droppableId) {
@@ -177,7 +187,6 @@ const DragDrop = () => {
                               {(provided, snapshot) => {
                                 return (
                                   <div
-                                    {...handlers}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
@@ -190,7 +199,11 @@ const DragDrop = () => {
                                         ? '#263B4A'
                                         : '#456C86',
                                       color: 'white',
-                                      ...provided.draggableProps.style
+
+                                      ...getStyle(
+                                        provided.draggableProps.style,
+                                        snapshot
+                                      )
                                     }}
                                   >
                                     {item.content}
